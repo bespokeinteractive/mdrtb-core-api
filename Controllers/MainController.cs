@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using EtbSomalia.Models;
 using EtbSomalia.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -19,12 +20,10 @@ namespace EtbSomalia.Controllers
         [AllowAnonymous]
         [HttpPost("authenticate")]
         [Route("api/authenticate")]
-        public IActionResult Authenticate([FromBody]User userParam) {
-            var user = iservice.Authenticate(userParam.Username, userParam.Password);
-
+        public IActionResult Authenticate([FromBody]User param) {
+            var user = iservice.Authenticate(param.Username, param.Password);
             if (user == null)
                 return BadRequest(new { message = "Username or password is incorrect" });
-
             return Ok(user);
         }
 
@@ -37,10 +36,27 @@ namespace EtbSomalia.Controllers
 
         [HttpGet]
         [Route("api/contacts/{uuid}")]
-        public IActionResult GetContactByUuid(string uuid)
-        {
-            var contacts = iservice.GetContact(uuid);
-            return Ok(contacts);
+        public IActionResult GetContactByUuid(string uuid) {
+            var contacts = iservice.GetContacts(null, uuid);
+            if (contacts.Count.Equals(0))
+                return BadRequest("Invalid Contact");
+            return Ok(contacts[0]);
+        }
+
+        [HttpGet]
+        [Route("api/contacts/examinations/{uuid}")]
+        public IActionResult GetContactExaminations(string uuid) {
+            var exams = iservice.GetContactsExaminations(uuid);
+            if (exams.Count.Equals(0))
+                return BadRequest("Invalid Contact");
+            return Ok(exams[0]);
+        }
+
+        [HttpGet]
+        [Route("api/contacts/examinations")]
+        public IActionResult GetContactsExaminations(string p = "") {
+            var exams = iservice.GetContactsExaminations(null, p);
+            return Ok(exams);
         }
 
         [AllowAnonymous]
