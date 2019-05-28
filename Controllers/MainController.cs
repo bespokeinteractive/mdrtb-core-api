@@ -44,6 +44,20 @@ namespace EtbSomalia.Controllers
         }
 
         [HttpGet]
+        [Route("api/contacts/count")]
+        public IActionResult GetContactsCount(string p = "") {
+            var contacts = iservice.GetContacts(p);
+            return Ok(contacts.Count);
+        }
+
+        [HttpGet]
+        [Route("api/contacts/examinations")]
+        public IActionResult GetContactsExaminations(string p = "") {
+            var exams = iservice.GetContactsExaminations(null, p);
+            return Ok(exams);
+        }
+        
+        [HttpGet]
         [Route("api/contacts/examinations/{uuid}")]
         public IActionResult GetContactExaminations(string uuid) {
             var exams = iservice.GetContactsExaminations(uuid);
@@ -53,17 +67,17 @@ namespace EtbSomalia.Controllers
         }
 
         [HttpGet]
-        [Route("api/contacts/examinations")]
-        public IActionResult GetContactsExaminations(string p = "") {
+        [Route("api/contacts/examinations/count")]
+        public IActionResult GetContactsExaminationsCount(string p = "") {
             var exams = iservice.GetContactsExaminations(null, p);
-            return Ok(exams);
+            return Ok(exams.Count);
         }
 
         [AllowAnonymous]
         [HttpGet]
         [Route("api/status")]
         public IActionResult TestAPI() {
-            return Ok("Ok");
+            return Ok("Api Running");
         }
     }
 }
